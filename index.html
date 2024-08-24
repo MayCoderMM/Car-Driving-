@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Car Driving</title>
+  <!-- MDB -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.3.2/mdb.min.css" rel="stylesheet" />
+  <style>
+    .road {
+      width: 100%;
+      height: 200px;
+      background-image: url('./highway.jpg');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      margin-top: 50px;
+    }
+    .car {
+      width: 100px;
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(50%);
+    }
+  </style>
+</head>
+<body>
+  <div class="row">
+    <div class="container">
+      <div class="road">
+        <img src="./car.png" alt="car" class="car" id="car">
+      </div>
+    </div>
+    <div class="mt-3 mx-3">
+      <button class="btn btn-primary" onclick="startCar()" aria-label="Start Car">Start</button>
+      <button class="btn btn-success" onclick="driveCar()" aria-label="Drive Car">Drive</button>
+      <button class="btn btn-warning" onclick="hornCar()" aria-label="Horn Car">Horn</button>
+      <button class="btn btn-danger" onclick="stopCar()" aria-label="Stop Car">Stop</button>
+    </div>
+  </div>
+  
+  <!-- MDB -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.3.2/mdb.umd.min.js"></script>
+
+  <!-- JavaScript Code -->
+  <script>
+    let carInterval = null;
+    let carSpeed = 5;
+    let startSound = new Audio('./car-engine-start-44357.mp3');
+    let engineSound = new Audio('./car_engine.mp3');
+    let hornSound = new Audio('./car horn.wav');
+
+    function driveCar() {
+      if (!carInterval) {
+        startSound.pause();
+        engineSound.loop = true;
+        engineSound.play();
+        carInterval = setInterval(() => {
+          let left = parseInt(window.getComputedStyle(car).getPropertyValue('left'));
+          if (left + carSpeed + car.offsetWidth <= window.innerWidth) { // Prevent going off-screen
+            car.style.left = (left + carSpeed) + 'px';
+          } else {
+            stopCar();  // Stop car if it reaches the end
+          }
+        }, 100);
+      }
+    }
+
+    function stopCar() {
+      clearInterval(carInterval);
+      carInterval = null;  // Reset the interval state
+      startSound.pause();
+      engineSound.pause();
+    }
+
+    function startCar() {
+      startSound.play();
+    }
+
+    function hornCar() {
+      hornSound.play();
+    }
+  </script>
+</body>
+</html>
